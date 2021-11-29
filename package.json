@@ -1,0 +1,19 @@
+{
+    "name": "com.artcart.sdk",
+    "version": "10.0.1",
+    "displayName": "ArtCart SDK",
+    "description": "This an SDK for ArtCart",
+    "unity": "2019.1",
+    "unityRelease": "0b5",
+    "dependencies": {
+    },
+    "keywords": [
+      "SDK",
+      "NFT"
+    ],
+    "author": {
+      "name": "Ablomis",
+      "email": "anatolii.iakimets@gmail.com",
+      "url": "https://artcart.app"
+    }
+  }
