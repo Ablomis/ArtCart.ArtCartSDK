@@ -1,10 +1,13 @@
-
-using System.Net;
+using UnityEngine;
 using System;
-using System.IO;
-using Assets;
-using System.Text.Json;
-public class artcart: MonoBehaviour
+using System.Net.Http;
+using System.Text;
+using Steamworks;
+using System.Dynamic;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
+public class ArtCart: MonoBehaviour
 {
     public string clientID;
 
@@ -42,40 +45,22 @@ public class artcart: MonoBehaviour
         return sb.ToString();
     }
 
-    public async void connect(string clientID){
+    public async void connect(){
         using var client = new HttpClient();
+        var payload = new List<KeyValuePair<string, string>>();
+        payload.Add(new KeyValuePair<string, string>("steamTicket", "Test ticket"));
+        payload.Add(new KeyValuePair<string, string>("clientID", this.clientID));
 
-        string json = new JavaScriptSerializer().Serialize(new
-                {
-                    //steamTicket = GetSteamAuthTicket(),
-                    steamTicket = "Test ticket",
-                    clientID = this.clientID
-                });
+        var json = JsonConvert.SerializeObject(payload);
+
 
         var data = new StringContent(json, Encoding.UTF8, "application/json");
         var url = "https://artcart-server.herokuapp.com/api/steam/auth";
 
         var response = await client.PostAsync(url, data);
         string result = response.Content.ReadAsStringAsync().Result;
-        Console.WriteLine(result);
+        Debug.Log(result);
     }
 
-        // Utility callbacks to log the result
-    private void OnComplete(LoginResult obj) {
-        Debug.Log("Success!");
-    }
-
-    private void OnFailed(PlayFabError error) {
-        Debug.Log("Failed: " + error.GenerateErrorReport());
-    }
-
-}
-
-public class nft
-{
-    private string imgURL;
-    private string metaURL;
-    private string nftAddress;
-    private int nftID;
 }
 

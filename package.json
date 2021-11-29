@@ -4,9 +4,6 @@
     "displayName": "ArtCart SDK",
     "description": "This an SDK for ArtCart",
     "unity": "2019.1",
-    "unityRelease": "0b5",
-    "dependencies": {
-    },
     "keywords": [
       "SDK",
       "NFT"
