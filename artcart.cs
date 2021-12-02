@@ -17,6 +17,7 @@ public class ArtCart: MonoBehaviour
     void Start()
     {
         this.connect();
+        //this.createPlayer();
     }
 
     // Update is called once per frame
@@ -47,15 +48,32 @@ public class ArtCart: MonoBehaviour
 
     public async void connect(){
         using var client = new HttpClient();
-        var payload = new List<KeyValuePair<string, string>>();
-        payload.Add(new KeyValuePair<string, string>("steamTicket", "Test ticket"));
-        payload.Add(new KeyValuePair<string, string>("clientID", this.clientID));
+        var payload = new Dictionary<string, string>();
+        payload.Add("steamTicket", "Test ticket");
+        payload.Add("clientID", this.clientID);
 
         var json = JsonConvert.SerializeObject(payload);
 
 
         var data = new StringContent(json, Encoding.UTF8, "application/json");
-        var url = "https://artcart-server.herokuapp.com/api/steam/auth";
+        var url = "https://platform.artcart.cloud/api/steam/auth";
+
+        var response = await client.PostAsync(url, data);
+        string result = response.Content.ReadAsStringAsync().Result;
+        Debug.Log(result);
+    }
+
+    public async void createPlayer()
+    {
+        using var client = new HttpClient();
+        var payload = new Dictionary<string, string>();
+        payload.Add("steamID", "TEST_STEAM_ID");
+
+        var json = JsonConvert.SerializeObject(payload);
+
+
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+        var url = "https://platform.artcart.cloud/api/steam/player";
 
         var response = await client.PostAsync(url, data);
         string result = response.Content.ReadAsStringAsync().Result;
