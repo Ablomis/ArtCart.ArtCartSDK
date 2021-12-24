@@ -12,11 +12,14 @@ public class ArtCart: MonoBehaviour
     public string clientID;
 
     private string accessToken;
+    private string authTicket;
 
     // Start is called before the first frame update
     void Start()
     {
         this.connect();
+        this.authTicket = this.GetSteamAuthTicket();
+        Debug.Log(this.authTicket);
         //this.createPlayer();
     }
 
@@ -80,5 +83,23 @@ public class ArtCart: MonoBehaviour
         Debug.Log(result);
     }
 
+    public async void awardNFT(string nftAddress, int nftID)
+    {
+        using var client = new HttpClient();
+        var payload = new Dictionary<string, string>();
+        payload.Add("nftAddress", nftAddress);
+        payload.Add("nftAddress", nftID.ToString());
+        payload.Add("clientID", clientID);
+
+        var json = JsonConvert.SerializeObject(payload);
+
+
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+        var url = "https://platform.artcart.cloud/api/steam/transaction                                                                                                                                                                             ";
+
+        var response = await client.PostAsync(url, data);
+        string result = response.Content.ReadAsStringAsync().Result;
+        Debug.Log(result);
+    }
 }
 
