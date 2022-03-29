@@ -1,8 +1,8 @@
 {
     "name": "com.artcart.sdk",
-    "version": "10.0.1",
-    "displayName": "ArtCart SDK",
-    "description": "This an SDK for ArtCart",
+    "version": "1.0.0",
+    "displayName": "ArtCart Unity SDK",
+    "description": "This a Unity SDK for ArtCart",
     "unity": "2019.1",
     "keywords": [
       "SDK",
@@ -10,7 +10,7 @@
     ],
     "author": {
       "name": "Ablomis",
-      "email": "anatolii.iakimets@gmail.com",
-      "url": "https://artcart.app"
+      "email": "ai@artcart.cloud",
+      "url": "https://artcart.cloud"
     }
   }

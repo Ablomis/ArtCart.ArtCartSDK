@@ -2,102 +2,67 @@ using UnityEngine;
 using System;
 using System.Net.Http;
 using System.Text;
-using Steamworks;
 using System.Dynamic;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
 public class ArtCart: MonoBehaviour
 {
-    public string clientID;
+    public static ArtCart Instance;
 
-    private string accessToken;
-    private string authTicket;
+    private string url_awardNFT = "https://artcart-serverless.netlify.app/.netlify/functions/awardNFT";
+    private string url_awardSpecificNFT = "https://artcart-serverless.netlify.app/.netlify/functions/awardSpecificNFT";
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        this.connect();
-        this.authTicket = this.GetSteamAuthTicket();
-        Debug.Log(this.authTicket);
-        //this.createPlayer();
-    }
+        // First time run
+        if (Instance == null)
+        {
+            // Tell Unity not to destory the
+            //  the GameObject this script component
+            //  is attached to (thus keeping it alive
+            //  as well).
+            DontDestroyOnLoad(gameObject);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    //This method returns
-    public string GetSteamAuthTicket() {
-        byte[] ticketBlob = new byte[1024];
-        uint ticketSize;
-
-        // Retrieve ticket; hTicket should be a field in the class so you can use it to cancel the ticket later
-        // When you pass an object, the object can be modified by the callee. This function modifies the byte array you've passed to it.
-        HAuthTicket hTicket = SteamUser.GetAuthSessionTicket(ticketBlob, ticketBlob.Length, out ticketSize);
-
-        // Resize the buffer to actual length
-        Array.Resize(ref ticketBlob, (int)ticketSize);
-
-        // Convert bytes to string
-        StringBuilder sb = new StringBuilder();
-        foreach (byte b in ticketBlob) {
-            sb.AppendFormat("{0:x2}", b);
+            // Save a reference to 'this'
+            Instance = this;
         }
-        return sb.ToString();
+        else if (Instance != this)
+        {
+            // If Instance is ever not its first 'this',
+            //  destroy it.
+            Destroy(gameObject);
+        }
+
     }
 
-    public async void connect(){
+    public async void awardSpecificNFT(string email, string cid)
+    {
         using var client = new HttpClient();
         var payload = new Dictionary<string, string>();
-        payload.Add("steamTicket", "Test ticket");
-        payload.Add("clientID", this.clientID);
+        payload.Add("email", email.ToString());
+        payload.Add("cid", cid.ToString());
 
         var json = JsonConvert.SerializeObject(payload);
 
-
         var data = new StringContent(json, Encoding.UTF8, "application/json");
-        var url = "https://platform.artcart.cloud/api/steam/auth";
 
-        var response = await client.PostAsync(url, data);
+        var response = await client.PostAsync(url_awardNFT, data);
         string result = response.Content.ReadAsStringAsync().Result;
         Debug.Log(result);
     }
 
-    public async void createPlayer()
+    public async void awardNFT(string email)
     {
         using var client = new HttpClient();
         var payload = new Dictionary<string, string>();
-        payload.Add("steamID", "TEST_STEAM_ID");
+        payload.Add("email", email.ToString());
 
         var json = JsonConvert.SerializeObject(payload);
 
+        var data = new StringContent(json, Encoding.UTF8, "application/json"); 
 
-        var data = new StringContent(json, Encoding.UTF8, "application/json");
-        var url = "https://platform.artcart.cloud/api/steam/player";
-
-        var response = await client.PostAsync(url, data);
-        string result = response.Content.ReadAsStringAsync().Result;
-        Debug.Log(result);
-    }
-
-    public async void awardNFT(string nftAddress, int nftID)
-    {
-        using var client = new HttpClient();
-        var payload = new Dictionary<string, string>();
-        payload.Add("nftAddress", nftAddress);
-        payload.Add("nftAddress", nftID.ToString());
-        payload.Add("clientID", clientID);
-
-        var json = JsonConvert.SerializeObject(payload);
-
-
-        var data = new StringContent(json, Encoding.UTF8, "application/json");
-        var url = "https://platform.artcart.cloud/api/steam/transaction                                                                                                                                                                             ";
-
-        var response = await client.PostAsync(url, data);
+        var response = await client.PostAsync(url_awardSpecificNFT, data);
         string result = response.Content.ReadAsStringAsync().Result;
         Debug.Log(result);
     }
