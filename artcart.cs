@@ -47,7 +47,7 @@ public class ArtCart: MonoBehaviour
 
         var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await client.PostAsync(url_awardNFT, data);
+        var response = await client.PostAsync(url_awardSpecificNFT, data);
         string result = response.Content.ReadAsStringAsync().Result;
         Debug.Log(result);
     }
@@ -62,7 +62,7 @@ public class ArtCart: MonoBehaviour
 
         var data = new StringContent(json, Encoding.UTF8, "application/json"); 
 
-        var response = await client.PostAsync(url_awardSpecificNFT, data);
+        var response = await client.PostAsync(url_awardNFT, data);
         string result = response.Content.ReadAsStringAsync().Result;
         Debug.Log(result);
     }
