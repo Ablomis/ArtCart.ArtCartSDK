@@ -38,16 +38,10 @@ public class ArtCart: MonoBehaviour
 
     }
 
-    public IEnumerator awardSpecificNFT(string email, string cid)
+    IEnumerator Post(string url, string bodyJsonString)
     {
-        var payload = new Dictionary<string, string>();
-        payload.Add("email", email.ToString());
-        payload.Add("cid", cid.ToString());
-
-        var json = JsonConvert.SerializeObject(payload);
-
-        var request = new UnityWebRequest(url_awardSpecificNFT, "POST");
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
+        var request = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
         request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
@@ -55,7 +49,18 @@ public class ArtCart: MonoBehaviour
         Debug.Log("Status Code: " + request.responseCode);
     }
 
-    public async void awardNFT(string email)
+    public void awardSpecificNFT(string email, string cid)
+    {
+        var payload = new Dictionary<string, string>();
+        payload.Add("email", email.ToString());
+        payload.Add("cid", cid.ToString());
+
+        var json = JsonConvert.SerializeObject(payload);
+
+        StartCoroutine(Post(url_awardSpecificNFT, json));
+    }
+
+    public void awardNFT(string email)
     {
         using var client = new HttpClient();
         var payload = new Dictionary<string, string>();
@@ -63,11 +68,7 @@ public class ArtCart: MonoBehaviour
 
         var json = JsonConvert.SerializeObject(payload);
 
-        var data = new StringContent(json, Encoding.UTF8, "application/json"); 
-
-        var response = await client.PostAsync(url_awardNFT, data);
-        string result = response.Content.ReadAsStringAsync().Result;
-        Debug.Log(result);
+        StartCoroutine(Post(url_awardNFT, json));
     }
 }
 
